@@ -8,7 +8,6 @@ export default class PortfolioContainer extends Component {
     constructor() {
         super();
         this.state = {
-            "pageTitle": "Welcome to my portfolio",
             "data": [
                 // { title: 'NMS', category: 'e-commerce', slug: 'nms' },
                 // { title: 'Reflexis', category: 'Scheduling', slug: 'reflexis' },
@@ -28,6 +27,7 @@ export default class PortfolioContainer extends Component {
  
         // Make a request for a user with a given ID
         axios.get('https://jyothiturpu.devcamp.space/portfolio/portfolio_items')
+        // axios.get('https://jordan.devcamp.space/portfolio/portfolio_items')
         .then(response => {
             // handle success
             console.log("Response DATA", response);
@@ -78,14 +78,11 @@ export default class PortfolioContainer extends Component {
         }
         
         return ( 
-            <div>
-            <h2 > { this.state.pageTitle } </h2> 
-            {/* <button onClick={this.handlePageTitleUpdate}>Change Title</button> */}
-            <button onClick = {() => this.handleFilter('e-commerce')}>eCommerce</button>
-            <button onClick = {() => this.handleFilter('Scheduling')}>Scheduling</button>
-            <button onClick = {() => this.handleFilter('Enterprise')}>Enterprise</button>
-
-            { this.portfolioItems() } 
+            <div className='portfolio-items-wrapper'>
+                <button className='btn' onClick = {() => this.handleFilter('e-commerce')}>eCommerce</button>
+                <button className='btn' onClick = {() => this.handleFilter('Scheduling')}>Scheduling</button>
+                <button className='btn' onClick = {() => this.handleFilter('Enterprise')}>Enterprise</button>
+                { this.portfolioItems() } 
             </div>
         );
     }
