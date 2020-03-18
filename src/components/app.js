@@ -22,6 +22,7 @@ export default class App extends Component {
         }
         this.handleSuccessfulLogin = this.handleSuccessfulLogin.bind(this);
         this.handleUnSuccessfulLogin = this.handleUnSuccessfulLogin.bind(this);
+        this.handleSuccessfulLogout = this.handleSuccessfulLogout.bind(this);
     }
 
     handleSuccessfulLogin() {
@@ -32,6 +33,11 @@ export default class App extends Component {
     handleUnSuccessfulLogin() {
         this.setState({loggedInStatus: "NOT_LOGGED_IN"});
     }
+
+    handleSuccessfulLogout() {
+        this.setState({loggedInStatus: "NOT_LOGGED_IN"});
+    }
+
 
     checkLoginStatus() {
         return axios.get("https://api.devcamp.space/logged_in", { withCredentials: true }).then(response => {
@@ -68,11 +74,11 @@ export default class App extends Component {
             
             <Router>
                 <div>
-                    <NavigationContainer loggedInStatus={this.state.loggedInStatus}/>
+                    <NavigationContainer loggedInStatus={this.state.loggedInStatus} 
+                    handleSuccessfulLogout={this.handleSuccessfulLogout}/>
                     <h2>{this.state.loggedInStatus}</h2>
                     <Switch> 
                         <Route exact path='/' component = {Home} />
-                        <Route path='/about-me' component = {About} />
                         <Route path='/auth' 
                         render={props => (
                             <Auth
@@ -80,8 +86,9 @@ export default class App extends Component {
                             handleSuccessfulLogin = {this.handleSuccessfulLogin}
                             handleUnSuccessfulLogin = {this.handleUnSuccessfulLogin} />
                         )} />
+                        <Route path='/about-me' component = {About} />
                         <Route path='/contact' component = {Contact} />
-                        {this.state.loggedInStatus === 'LOGGED_IN' ? this.authorizedRoutes() : null}
+                        {this.state.loggedInStatus === 'LOGGED_IN' ? this.authorizedRoutes() : null}    
                         <Route exact path='/portfolio/:slug' component = {PortfolioDetail} />
                         <Route component = {NoMatch} />
                     </Switch>
