@@ -17,7 +17,10 @@ export default class PortfolioForm extends Component {
       position: '',
       thumb_image: '',
       banner_image: '',
-      logo: ''
+      logo: '',
+      editMode: false,
+      apiUrl: 'https://jyothiturpu.devcamp.space/portfolio/portfolio_items',
+      apiAction: 'post'
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -32,6 +35,31 @@ export default class PortfolioForm extends Component {
     this.bannerRef = React.createRef();
     this.logoRef = React.createRef();
   }
+
+  componentDidUpdate() {
+    if(Object.keys(this.props.portfolioToEdit).length > 0){
+      const {
+        id, name, description, category, position, url, thumb_image_url, banner_image_url, logo_url
+      } = this.props.portfolioToEdit;
+
+      this.props.clearPortfolioToEdit();
+      this.setState({
+        id: id,
+        name: name  || '',
+        description: description || '',
+        url: url || '',
+        category: category || 'eCommerce',
+        position: position || '',
+        thumb_image: thumb_image_url || '',
+        banner_image: banner_image_url || '',
+        logo: logo_url || '',
+        editMode: true,
+        apiUrl: `https://jyothiturpu.devcamp.space/portfolio/portfolio_items/${id}`,
+        apiAction: 'patch'
+      });
+    }
+  }
+
 
   handleThumbDrop() {
     return ({
@@ -95,10 +123,23 @@ export default class PortfolioForm extends Component {
   }
 
   handleSubmit(event) {
-    axios.post('https://jyothiturpu.devcamp.space/portfolio/portfolio_items', this.buildForm(), { withCredentials: true })
-    .then(response => {
-      this.props.handleSuccessfulformSubmission(response.data.portfolio_item);
+    console.log("apiAction", this.state.apiAction);
+    console.log("apiAction", this.state.apiUrl);
+    axios({
+      method: this.state.apiAction,
+      url: this.state.apiUrl,
+      data: this.buildForm(),
+      withCredentials: true
+    }).then(response => {
       console.log('Response after posting a Portfolio Item', response);
+      
+      
+      if(this.state.editMode)
+          this.props.handleEditFormSubmission();
+      else
+          this.props.handleNewFormSubmission(response.data.portfolio_item);
+          
+      
       [this.thumbRef, this.bannerRef, this.logoRef].forEach(ref=>{
         ref.current.dropzone.removeAllFiles();
       });
@@ -110,7 +151,10 @@ export default class PortfolioForm extends Component {
         position: '',
         thumb_image: '',
         banner_image: '',
-        logo: ''
+        logo: '',
+        editMode: false,
+        apiUrl: 'https://jyothiturpu.devcamp.space/portfolio/portfolio_items',
+        apiAction: 'post'
       }); 
     })
     .catch(error => {
