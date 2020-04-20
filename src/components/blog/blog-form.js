@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import RichTextEditor from '../forms/rich-text-editor';
+
 export default class BlogForm extends Component {
 
   constructor(props) {
@@ -8,19 +10,29 @@ export default class BlogForm extends Component {
 
     this.state = {
       title: '',
-      blog_status: ''
+      blog_status: '',
+      content: ''
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRichTextEditorChange = this.handleRichTextEditorChange.bind(this);
   }
+
+
+  handleRichTextEditorChange(content) {
+      this.setState({ content });
+  }
+
+
 
   buildForm() {
     let formData = new FormData();
     
     formData.append('portfolio_blog[title]', this.state.title);
     formData.append('portfolio_blog[blog_status]', this.state.blog_status);
-
+    formData.append('portfolio_blog[content]', this.state.content);
+    
     return formData;
   }
 
@@ -28,12 +40,14 @@ export default class BlogForm extends Component {
       axios.post('https://jyothiturpu.devcamp.space/portfolio/portfolio_blogs', this.buildForm(), { withCredentials: true })
       .then(response => {
         console.log('Response received in BlogForm=>handleSubmit ', response);
-        this.props.handleSuccessfullFormSubmission(response.data.portfolio_blog);
-
         this.setState({
           title: '',
-          blog_status: ''
+          blog_status: '',
+          content: ''
         });
+
+        
+        this.props.handleSuccessfullFormSubmission(response.data.portfolio_blog);
       })
       .catch(error => {
         console.log('Error in BlogForm=>handleSubmit ', error);
@@ -57,8 +71,12 @@ export default class BlogForm extends Component {
             
             <input onChange={this.handleChange} type="text" name='blog_status' placeholder='Blog Status' value={this.state.blog_status}/> 
          </div>
-         
-         <button className='btn'> Save</button>
+
+        <div className='one-column'>
+            <RichTextEditor handleRichTextEditorChange={this.handleRichTextEditorChange}/>
+        </div> 
+          
+          <button className='btn'> Save</button>
       </form>
     );
   }
