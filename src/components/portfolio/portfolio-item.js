@@ -28,27 +28,29 @@ export default class PortfolioItem extends Component {
   // ["id", "name", "description", "url", "category", "position", "", "banner_image_url", "logo_url", "column_names_merged_with_images"]
   const { id, description, thumb_image_url, logo_url } = this.props.item;
   return (
-    <div className='portfolio-item-wrapper' 
-    onMouseEnter={() => this.handleMouseEnter()}
-    onMouseLeave={() => this.handleMouseLeave()}
-    >
-      <div 
-        className={'portfolio-img-background'+ ' ' +this.state.portfolioItemClass}
-        style={{
-          backgroundImage: "url("+thumb_image_url+")"
-        }}
-      />
+    <Link to={`/portfolio/${id}`}> 
+          <div className='portfolio-item-wrapper' 
+          onMouseEnter={() => this.handleMouseEnter()}
+          onMouseLeave={() => this.handleMouseLeave()}
+          >
+            <div 
+              className={'portfolio-img-background'+ ' ' +this.state.portfolioItemClass}
+              style={{
+                backgroundImage: "url("+thumb_image_url+")"
+              }}
+            />
 
-        <div className='img-text-wrapper'>
-              <div className='logo-wrapper'>
-                <img src={logo_url} alt=""/>
-              </div>
+              <div className='img-text-wrapper'>
+                    <div className='logo-wrapper'>
+                      <img src={logo_url} alt=""/>
+                    </div>
 
-              <div className='subtitle'>
-                {description}
+                    <div className='subtitle'>
+                      {description}
+                    </div>
               </div>
-        </div>
-    </div>
+          </div>
+    </Link>
   );
 
   }
